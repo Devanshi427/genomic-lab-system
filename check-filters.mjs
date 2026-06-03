@@ -1,0 +1,10 @@
+import { PrismaClient } from '@prisma/client'
+const p = new PrismaClient()
+const requests = await p.request.findMany({ select: { year: true, season: true, crop: true, analysisToBeDone: true, status: true } })
+const unique = (arr) => [...new Set(arr.filter(Boolean))].sort()
+console.log('Years:', unique(requests.map(r => r.year)))
+console.log('Seasons:', unique(requests.map(r => r.season)))
+console.log('Crops:', unique(requests.map(r => r.crop)))
+console.log('Analysis:', unique(requests.map(r => r.analysisToBeDone)))
+console.log('Status:', unique(requests.map(r => r.status)))
+await p.$disconnect()

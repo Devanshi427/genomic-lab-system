@@ -1,0 +1,2 @@
+ALTER TABLE "PhaseHistory" DROP CONSTRAINT "PhaseHistory_requestId_fkey";
+ALTER TABLE "PhaseHistory" ADD CONSTRAINT "PhaseHistory_requestId_fkey" FOREIGN KEY ("requestId") REFERENCES "Request"(id) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -1,0 +1,223 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────
+   BASE
+───────────────────────────────────────────── */
+body {
+  color: #171717;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+html.dark body {
+  background: #111827;
+  color: #f9fafb;
+}
+
+/* ─────────────────────────────────────────────
+   UTILITY: hide scrollbar (used by navbar)
+───────────────────────────────────────────── */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─────────────────────────────────────────────
+   GLASS FILTER BAR
+   Use on the filter row above tables.
+   Semi-translucent. Readable. Not overdone.
+───────────────────────────────────────────── */
+.glass-filters {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+html.dark .glass-filters {
+  background: rgba(31, 41, 55, 0.7);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ─────────────────────────────────────────────
+   GLASS INPUT / SELECT
+   Used inside filter bars only.
+───────────────────────────────────────────── */
+.glass-input {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(209, 213, 219, 0.8);
+  border-radius: 0.625rem;
+  color: #374151;
+  transition: all 0.15s ease;
+}
+
+.glass-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.25);
+  border-color: rgba(52, 211, 153, 0.5);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+html.dark .glass-input {
+  background: rgba(55, 65, 81, 0.8) !important;
+  color: #f9fafb !important;
+  border-color: rgba(75, 85, 99, 0.6) !important;
+}
+
+html.dark .glass-input:focus {
+  box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2) !important;
+  border-color: rgba(52, 211, 153, 0.4) !important;
+}
+
+/* ─────────────────────────────────────────────
+   TABLE CONTAINER
+   Solid white. High readability. Premium feel
+   through shadow + border, NOT transparency.
+───────────────────────────────────────────── */
+.table-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 10px 40px rgba(0, 0, 0, 0.06);
+}
+
+html.dark .table-container {
+  background: rgba(31, 41, 55, 0.92) !important;
+  border-color: rgba(55, 65, 81, 0.6) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ─────────────────────────────────────────────
+   TABLE HEADER
+   Elevated. Clearly separated. Not green.
+───────────────────────────────────────────── */
+.table-container thead tr {
+  background: rgba(248, 250, 252, 0.9);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.table-container thead th {
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+html.dark .table-container thead tr {
+  background: rgba(17, 24, 39, 0.8) !important;
+  border-bottom-color: rgba(55, 65, 81, 0.6) !important;
+}
+
+html.dark .table-container thead th {
+  color: #94a3b8 !important;
+}
+
+/* ─────────────────────────────────────────────
+   TABLE ROWS
+   Clean. No background tint.
+   Hover: very subtle emerald — only on hover.
+───────────────────────────────────────────── */
+.table-container tbody tr {
+  border-bottom: 1px solid rgba(241, 245, 249, 0.9);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.table-container tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table-container tbody tr:hover {
+  background: #bbf7d0;
+}
+
+html.dark .table-container tbody tr {
+  border-bottom-color: rgba(55, 65, 81, 0.4) !important;
+}
+
+html.dark .table-container tbody tr:hover {
+  background: rgba(52, 211, 153, 0.04) !important;
+}
+
+html.dark .table-container table {
+  background: transparent !important;
+  color: #f9fafb !important;
+}
+
+html.dark .table-container td,
+html.dark .table-container th {
+  color: #e2e8f0 !important;
+  background: transparent !important;
+}
+
+/* ─────────────────────────────────────────────
+   DARK MODE: legacy selects / inputs
+───────────────────────────────────────────── */
+html.dark input,
+html.dark select {
+  background: #374151;
+  color: #f9fafb;
+  border-color: #4b5563;
+}
+
+/* ─────────────────────────────────────────────
+   DARK MODE: sticky cells
+───────────────────────────────────────────── */
+html.dark td[style*='sticky'],
+html.dark th[style*='sticky'] {
+  background: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+/* ─────────────────────────────────────────────
+   DARK MODE: navbar
+───────────────────────────────────────────── */
+html.dark nav {
+  border-color: rgba(55, 65, 81, 0.5) !important;
+}
+
+
+html, body, #__next {
+  height: 100%;
+}
+
+
+html, body, #__next {
+  height: 100%;
+  max-width: 100%;
+}
+
+/* Sticky column cells — fully opaque, no bleed-through on scroll */
+.requests-table td[data-sticky],
+.requests-table th[data-sticky] {
+  position: sticky;
+  will-change: transform;
+  /* Force a new stacking context so backdrop-filter cannot bleed through */
+  isolation: isolate;
+}
+ 
+/* Solid backgrounds that override any semi-transparent rowBg */
+.requests-table tbody tr:nth-child(odd)  td[data-sticky] { background: #ffffff; }
+.requests-table tbody tr:nth-child(even) td[data-sticky] { background: #f8fafc; }
+.requests-table thead th[data-sticky]                    { background: #f8fafc; }
+ 
+/* Keep them solid on hover too */
+.requests-table tbody tr:hover td[data-sticky] { background: #ccfbf1 !important; }
+ 
+/* Subtle right shadow so the sticky edge is visible */
+.requests-table td[data-sticky],
+.requests-table th[data-sticky] {
+  box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+}

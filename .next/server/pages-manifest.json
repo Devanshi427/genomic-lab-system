@@ -1,0 +1,22 @@
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/api/dashboard/crops": "pages/api/dashboard/crops.js",
+  "/dashboard": "pages/dashboard.js",
+  "/api/dashboard/years": "pages/api/dashboard/years.js",
+  "/api/dashboard/stats": "pages/api/dashboard/stats.js",
+  "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
+  "/login": "pages/login.js",
+  "/requests/new": "pages/requests/new.js",
+  "/requests": "pages/requests.js",
+  "/api/requests": "pages/api/requests.js",
+  "/api/approvals/capacity": "pages/api/approvals/capacity.js",
+  "/approvals": "pages/approvals.js",
+  "/api/approvals": "pages/api/approvals.js",
+  "/inventory": "pages/inventory.js",
+  "/api/inventory": "pages/api/inventory.js",
+  "/api/labs": "pages/api/labs.js",
+  "/api/inventory/alerts": "pages/api/inventory/alerts.js",
+  "/inventory/new": "pages/inventory/new.js"
+}

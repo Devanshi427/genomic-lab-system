@@ -1,0 +1,234 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Lab {
+  id             Int             @id @default(autoincrement())
+  name           String
+  location       String
+  InventoryItems InventoryItem[]
+  requests       Request[]
+  users          User[]
+}
+
+model User {
+  id                    Int                    @id @default(autoincrement())
+  email                 String                 @unique
+  password              String
+  name                  String
+  role                  String
+  labId                 Int?
+  auditLogs             AuditLog[]
+  consumptionDeductions ConsumptionDeduction[]
+  transfersApproved     InventoryTransfer[]    @relation("TransferApproved")
+  transfersRequested    InventoryTransfer[]    @relation("TransferRequested")
+  reagentLogs           ReagentLog[]
+  submittedRequests     Request[]
+  lab                   Lab?                   @relation(fields: [labId], references: [id])
+  approvedRequests      Request[]              @relation("RequestApprovedBy")
+}
+
+model Request {
+  id                       Int                    @id @default(autoincrement())
+  requestCode              String                 @unique
+  sampleName               String
+  crop                     String?
+  season                   String?
+  year                     Int?
+  program                  String?
+  purpose                  String?
+  materialStage            String?
+  project                  String?
+  projectCode              String?
+  testType                 String
+  analysisToBeDone         String?
+  traitGene                String?
+  markersPerSample         Int?
+  predictedSamples         Int?
+  actualSamples            Int?
+  priority                 Int                    @default(1)
+  submittedAt              DateTime               @default(now())
+  expectedByDate           DateTime
+  tentativeSamplingDate    DateTime?
+  dateOfSampling           DateTime?
+  dateOfDispatch           DateTime?
+  dodCommittedByLab        DateTime?
+  dnaExtractionDate        DateTime?
+  genotypingDate           DateTime?
+  resultsCommunicationDate DateTime?
+  completedAt              DateTime?
+  currentPhase             String                 @default("SUBMITTED")
+  status                   String                 @default("PENDING")
+  notes                    String?
+  submittedById            Int
+  assignedLabId            Int?
+  actualDataPoints         Int?
+  archivedAt               DateTime?
+  archived                 Boolean                @default(false)
+  markerType               String?
+  snpCount                 Int?
+  ssrCount                 Int?
+  predictedDataPoints      Int?
+  phaseHistory             PhaseHistory[]
+  reagentLogs              ReagentLog[]
+  consumptionDeductions    ConsumptionDeduction[]
+  assignedLab              Lab?                   @relation(fields: [assignedLabId], references: [id])
+  submittedBy              User                   @relation(fields: [submittedById], references: [id])
+  // Approval queue fields
+  approvalStatus           String                 @default("PENDING_APPROVAL")
+  approvalPriority         String                 @default("NORMAL")
+  approvalDate             DateTime?
+  approvedById             Int?
+  queuePosition            Int?
+  totalSamples             Int?
+  approvedSamples          Int                    @default(0)
+  rejectedSamples          Int                    @default(0)
+  rejectionReason          String?
+  approvedBy               User?                  @relation("RequestApprovedBy", fields: [approvedById], references: [id])
+}
+
+model PhaseHistory {
+  id        Int      @id @default(autoincrement())
+  phase     String
+  notes     String?
+  startedAt DateTime @default(now())
+  requestId Int
+  request   Request  @relation(fields: [requestId], references: [id])
+}
+
+model InventoryItem {
+  id                Int                      @id @default(autoincrement())
+  name              String
+  category          String
+  quantity          Float
+  unit              String
+  minThreshold      Float
+  expiryDate        DateTime?
+  notes             String?
+  lowStockThreshold Float?
+  labId             Int
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+  brand             String?
+  manufacturingDate DateTime?
+  type              String                   @default("CHEMICAL")
+  clusterItems      ConsumptionClusterItem[]
+  experiments       ExperimentItem[]
+  lab               Lab                      @relation(fields: [labId], references: [id])
+  transfersFrom     InventoryTransfer[]      @relation("TransferFrom")
+  transfersTo       InventoryTransfer[]      @relation("TransferTo")
+  reagentLogs       ReagentLog[]
+}
+
+model ReagentLog {
+  id           Int           @id @default(autoincrement())
+  quantityUsed Float
+  purpose      String
+  usedAt       DateTime      @default(now())
+  itemId       Int
+  requestId    Int?
+  usedById     Int
+  item         InventoryItem @relation(fields: [itemId], references: [id])
+  request      Request?      @relation(fields: [requestId], references: [id])
+  usedBy       User          @relation(fields: [usedById], references: [id])
+}
+
+model InventoryTransfer {
+  id            Int           @id @default(autoincrement())
+  quantity      Float
+  reason        String?
+  status        String        @default("PENDING")
+  fromItemId    Int
+  toItemId      Int
+  requestedById Int
+  approvedById  Int?
+  createdAt     DateTime      @default(now())
+  completedAt   DateTime?
+  approvedBy    User?         @relation("TransferApproved", fields: [approvedById], references: [id])
+  fromItem      InventoryItem @relation("TransferFrom", fields: [fromItemId], references: [id])
+  requestedBy   User          @relation("TransferRequested", fields: [requestedById], references: [id])
+  toItem        InventoryItem @relation("TransferTo", fields: [toItemId], references: [id])
+}
+
+model Experiment {
+  id       Int                  @id @default(autoincrement())
+  name     String
+  clusters ConsumptionCluster[]
+  items    ExperimentItem[]
+}
+
+model ExperimentItem {
+  id           Int           @id @default(autoincrement())
+  experimentId Int
+  itemId       Int
+  experiment   Experiment    @relation(fields: [experimentId], references: [id])
+  item         InventoryItem @relation(fields: [itemId], references: [id])
+}
+
+model AuditLog {
+  id            Int      @id @default(autoincrement())
+  action        String
+  entityType    String
+  entityId      Int
+  detail        String?
+  performedAt   DateTime @default(now())
+  performedById Int
+  performedBy   User     @relation(fields: [performedById], references: [id])
+}
+
+model ConsumptionCluster {
+  id           Int                      @id @default(autoincrement())
+  name         String
+  description  String?
+  unit         String                   @default("sample")
+  experimentId Int?
+  sortOrder    Int                      @default(0)
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+  experiment   Experiment?              @relation(fields: [experimentId], references: [id])
+  items        ConsumptionClusterItem[]
+  deductions   ConsumptionDeduction[]
+}
+
+model ConsumptionClusterItem {
+  id         Int                @id @default(autoincrement())
+  qtyPerUnit Float
+  clusterId  Int
+  itemId     Int
+  cluster    ConsumptionCluster @relation(fields: [clusterId], references: [id], onDelete: Cascade)
+  item       InventoryItem      @relation(fields: [itemId], references: [id])
+}
+
+model ConsumptionDeduction {
+  id            Int                @id @default(autoincrement())
+  units         Float
+  notes         String?
+  performedAt   DateTime           @default(now())
+  clusterId     Int
+  performedById Int
+  // requestId is intentionally nullable: deductions may be performed
+  // outside of a formal request (e.g. lab maintenance, calibration runs).
+  // Do NOT add NOT NULL here. Use projectCode for traceability when no
+  // request exists.
+  requestId     Int?
+  projectCode   String?
+  cluster       ConsumptionCluster @relation(fields: [clusterId], references: [id])
+  performedBy   User               @relation(fields: [performedById], references: [id])
+  request       Request?           @relation(fields: [requestId], references: [id])
+}
+
+model CapacityTracking {
+  id          Int      @id @default(autoincrement())
+  weekStart   DateTime
+  serviceType String
+  capacity    Int      @default(10000)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([weekStart, serviceType])
+}
